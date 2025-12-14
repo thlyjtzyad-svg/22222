@@ -1,0 +1,317 @@
+
+accounts.html
+
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moataz Store | الحسابات</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;900&family=Amiri:wght@700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --gold: #D4AF37;
+            --gold-light: #F2D06B;
+            --black: #050505;
+            --overlay-dark: rgba(0, 0, 0, 0.9);
+            --white: #ffffff;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+        body {
+            background-color: var(--black);
+            color: var(--white);
+            min-height: 100vh;
+        }
+        /* الخلفية المنسوخة (Pattern) */
+        .pattern-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image:
+                linear-gradient(30deg, #111 12%, transparent 12.5%, transparent 87%, #111 87.5%, #111),
+                linear-gradient(150deg, #111 12%, transparent 12.5%, transparent 87%, #111 87.5%, #111);
+            background-size: 80px 140px;
+            opacity: 0.8;
+        }
+        header {
+            background: linear-gradient(to bottom, #000, transparent);
+            padding: 20px 0;
+            text-align: center;
+            border-bottom: 1px solid #333;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(5px);
+        }
+        .header-title {
+            font-family: 'Amiri', serif;
+            color: var(--gold);
+            font-size: 2rem;
+        }
+        .back-btn {
+            position: absolute;
+            left: 20px;
+            top: 25px;
+            color: #fff;
+            text-decoration: none;
+            border: 1px solid #555;
+            padding: 5px 15px;
+            transition: 0.3s;
+        }
+        .back-btn:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+        /* الشبكة */
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+        .card {
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 2px;
+            overflow: hidden;
+            transition: 0.4s;
+            cursor: pointer;
+            position: relative;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: var(--gold);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.1);
+        }
+        .card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            filter: grayscale(20%);
+            transition: 0.5s;
+        }
+        .card:hover img {
+            filter: grayscale(0%);
+            transform: scale(1.05);
+        }
+        .card-body {
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid #222;
+        }
+        .card-title {
+            color: var(--gold);
+            font-size: 1.2rem;
+            font-family: 'Amiri', serif;
+            margin-bottom: 5px;
+        }
+        .view-btn {
+            display: inline-block;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #888;
+            border-bottom: 1px dashed #555;
+        }
+        /* المودال القابل للتمرير (Scrollable Modal) */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(5px);
+            overflow-y: auto;
+            /* يسمح بالتمرير لكامل النافذة */
+            padding: 40px 20px;
+            align-items: flex-start;
+            /* يبدأ من الأعلى */
+            justify-content: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: #111;
+            width: 100%;
+            max-width: 600px;
+            border: 1px solid var(--gold);
+            position: relative;
+            margin: auto 0;
+            /* توسيط عمودي إذا كان المحتوى قصيراً */
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.2);
+            animation: slideDown 0.4s ease;
+        }
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        /* زر الإغلاق الثابت */
+        .close-btn {
+            position: sticky;
+            /* جعل الزر ثابتاً أثناء التمرير داخل المودال إذا أردنا ذلك، لكن هنا هو زر مطلق */
+            top: 0;
+            right: 0;
+            width: 100%;
+            background: #222;
+            color: #fff;
+            border: none;
+            border-bottom: 1px solid var(--gold);
+            padding: 15px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            z-index: 10;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .close-btn:hover {
+            background: #333;
+            color: var(--gold);
+        }
+        .modal-body {
+            padding: 0;
+        }
+        .modal-img {
+            width: 100%;
+            display: block;
+            border-bottom: 1px solid #333;
+        }
+        .modal-details {
+            padding: 30px;
+            text-align: center;
+        }
+        .modal-title {
+            font-family: 'Amiri', serif;
+            color: var(--gold);
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+        }
+        .modal-desc {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #ccc;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #0a0a0a;
+            border: 1px dashed #333;
+        }
+        .buy-action {
+            display: block;
+            background: var(--gold);
+            color: #000;
+            text-decoration: none;
+            padding: 18px;
+            font-weight: 900;
+            font-size: 1.2rem;
+            transition: 0.3s;
+        }
+        .buy-action:hover {
+            background: var(--gold-light);
+        }
+    </style>
+</head>
+<body>
+    <div class="pattern-bg"></div>
+    <header>
+        <h1 class="header-title">نخبة الحسابات</h1>
+        <a href="index.html" class="back-btn">رجوع</a>
+    </header>
+    <div class="container">
+        <!-- عنصر 1 -->
+        <div class="card"
+            onclick="openModal('https://iili.io/f5Uld8B.md.jpg', 'حساب ساكورا لفل 83', 'تفاصيل الحساب الفخم:<br><br>• لفل الحساب: 83<br>• سكن الساكورا الأصلي<br>• جميع الباسات النادرة جداً<br>• أسلحة إيفو ماكس<br>• سكنات سيارات نادرة<br>• حيوانات أليفة كاملة<br><br>هذا الحساب للمقتنين الحقيقيين.')">
+            <img src="https://iili.io/f5Uld8B.md.jpg">
+            <div class="card-body">
+                <h3 class="card-title">حساب ساكورا لفل 83</h3>
+                <span class="view-btn">اضغط للتفاصيل</span>
+            </div>
+        </div>
+        <!-- عنصر 2 -->
+        <div class="card"
+            onclick="openModal('https://iili.io/f5UGS1a.md.jpg', 'حساب الحركات النادرة', 'تفاصيل الحساب:<br><br>• مجموعة كبيرة من الرقصات النادرة<br>• أنيماشن دخول أسطوري<br>• سكنات ملابس حصرية<br>• تطويرات أسلحة متقدمة<br><br>مثالي لمحبي الاستعراض.')">
+            <img src="https://iili.io/f5UGS1a.md.jpg">
+            <div class="card-body">
+                <h3 class="card-title">حساب الحركات النادرة</h3>
+                <span class="view-btn">اضغط للتفاصيل</span>
+            </div>
+        </div>
+        <!-- عنصر 3 -->
+        <div class="card"
+            onclick="openModal('https://iili.io/f5UhDJa.md.jpg', 'حساب شعار ذهبي 79', 'تفاصيل الحساب:<br><br>• لفل 79<br>• شعار ذهبي مميز في الملف<br>• إحصائيات لعب قوية<br>• باقات نادرة<br><br>للتميز والهيبة.')">
+            <img src="https://iili.io/f5UhDJa.md.jpg">
+            <div class="card-body">
+                <h3 class="card-title">حساب شعار ذهبي 79</h3>
+                <span class="view-btn">اضغط للتفاصيل</span>
+            </div>
+        </div>
+        <!-- عنصر 4 -->
+        <div class="card"
+            onclick="openModal('https://iili.io/f5UwKCB.md.jpg', 'حساب الكريمنال', 'تفاصيل الحساب:<br><br>• سكن الكريمنال الكامل<br>• لفل 68<br>• معدات وتطويرات جاهزة للحروب<br><br>حساب مرعب للخصوم.')">
+            <img src="https://iili.io/f5UwKCB.md.jpg">
+            <div class="card-body">
+                <h3 class="card-title">حساب الكريمنال</h3>
+                <span class="view-btn">اضغط للتفاصيل</span>
+            </div>
+        </div>
+    </div>
+    <!-- المودال -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">
+                <span>إغلاق النافذة</span>
+                <span>✕</span>
+            </button>
+            <div class="modal-body">
+                <img id="m-img" class="modal-img">
+                <div class="modal-details">
+                    <h2 id="m-title" class="modal-title"></h2>
+                    <div id="m-desc" class="modal-desc"></div>
+                </div>
+            </div>
+            <a id="m-buy" href="#" class="buy-action">شراء الآن عبر واتساب</a>
+        </div>
+    </div>
+    <script>
+        const modal = document.getElementById('modal');
+        const mImg = document.getElementById('m-img');
+        const mTitle = document.getElementById('m-title');
+        const mDesc = document.getElementById('m-desc');
+        const mBuy = document.getElementById('m-buy');
+        function openModal(img, title, desc) {
+            mImg.src = img;
+            mTitle.innerText = title;
+            mDesc.innerHTML = desc;
+            mBuy.href = "https://wa.me/962775355332?text=" + encodeURIComponent("أريد شراء: " + title);
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // منع تمرير الصفحة الرئيسية
+        }
+        function closeModal() {
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto'; // إعادة التمرير
+        }
+        // إغلاق عند النقر خارج المحتوى
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+    </script>
+</body>
+</html>
